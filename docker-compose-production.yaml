@@ -1,0 +1,23 @@
+version: "3.7"
+services:
+  mysql:
+    restart: always
+    image: mysql:8.0.25
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+  web:
+    container_name: authentication_web_1
+    depends_on:
+      - mysql
+    image: registry.gitlab.com/football-league-liophy/team-integration/authentication:auth
+    restart: on-failure
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/football_players?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
+      - FB_ID=1112846396210303
+      - FB_SECRET=37a4c273770d4aa025bd3f42af0f131e
+
+networks:
+  default:
+    name: football

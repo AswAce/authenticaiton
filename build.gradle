@@ -1,0 +1,116 @@
+plugins {
+    id 'application'
+    id 'checkstyle'
+    id 'pmd'
+    id 'jacoco'
+    id 'org.barfuin.gradle.jacocolog' version '2.0.0'
+    id 'org.springframework.boot' version '2.6.0'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+sourceCompatibility = '17'
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //db
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.1'
+
+    runtimeOnly 'mysql:mysql-connector-java:8.0.25'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc:2.6.1'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.1'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.6.1'
+    // https://mvnrepository.com/artifact/com.h2database/h2
+    testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
+
+
+    //Scheduler
+    implementation group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.2'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.14.1'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.1'
+
+    //security
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:2.6.1'
+    implementation 'org.springframework.boot:spring-boot-starter-security:2.6.1'
+    implementation 'org.springframework.boot:spring-boot-starter-validation:2.6.1'
+
+//jsontoken
+    implementation("io.jsonwebtoken:jjwt-api:0.11.2")
+    implementation("io.jsonwebtoken:jjwt-impl:0.11.2")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
+    //web
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.1'
+
+    //lombok
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+    //test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.1'
+    testImplementation 'org.springframework.security:spring-security-test:5.5.1'
+    testImplementation group: 'org.springframework', name: 'spring-test', version: '5.3.13'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '4.0.0'
+
+   //http client
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+
+
+}
+
+application {
+    mainClass = 'security.SecurityApplication'
+}
+
+compileJava {
+    options.release = 17
+}
+
+tasks.named('test') {
+    // Use JUnit Platform for unit tests.
+    useJUnitPlatform()
+}
+
+
+pmd {
+    consoleOutput = true
+    toolVersion = "6.38.0"
+    rulesMinimumPriority = 5
+    ruleSetFiles = files("config/pmd/custom-ruleset.xml")
+    ruleSets = []
+}
+
+jacoco {
+    toolVersion = "0.8.7"
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    reports {
+        xml.required = true
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+}
+
+jacocoTestCoverageVerification {
+    dependsOn jacocoTestReport
+    violationRules {
+        rule {
+            element = 'CLASS'
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.6
+            }
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.6
+            }
+        }
+    }
+}

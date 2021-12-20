@@ -1,0 +1,28 @@
+version: "3.7"
+services:
+  mysql:
+    restart: always
+    image: mysql:8.0.25
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+    ports:
+      - "3306:3306"
+  web:
+    container_name: authentication_web_1
+    depends_on:
+      - mysql
+    restart: on-failure
+    build: .
+    ports:
+      - "8181:8181"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/football_players?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
+      - FB_ID=592469825201877
+      - FB_SECRET=8c4176b4ba71fe3998f756ff353b556f
+
+
+networks:
+  default:
+    name: football
