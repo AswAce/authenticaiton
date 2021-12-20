@@ -22,6 +22,6 @@ FROM openjdk:latest
 WORKDIR /usr/src/app
 
 # Copy the built jar
-COPY --from=build /usr/src/app/build/libs/security.jar app.jar
+COPY --from=build /usr/src/app/build/libs/authentication-front-end.jar app.jar
 
 CMD java -jar app.jar
