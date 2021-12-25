@@ -15,8 +15,8 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/football_players?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true
       - DB_USERNAME=root
       - DB_PASSWORD=secret
-      - FB_ID=1112846396210303
-      - FB_SECRET=37a4c273770d4aa025bd3f42af0f131e
+      - FB_ID=enter_your_FB_app_ID_In_production
+      - FB_SECRET=enter_your_FB_app_Secret_In_production
 
 networks:
   default:
